@@ -1,1 +1,2 @@
-# rada_schema_parametric
+Experiments with parametric design.
+Sketch for Processing 3.
