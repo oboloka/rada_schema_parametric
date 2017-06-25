@@ -31,6 +31,7 @@ class Cell {
 		){
 			if(mousePressed){//if mouse is over/within a boxes bounds and clicked
 				cellColor = selectedColor;
+				currentSchema.subtrReducedColor(selectedColor);
 			}
 		}
 	}

@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Global variables
@@ -17,14 +19,11 @@ boolean save = false;
 // screen size
 int screenWidth = 1200;
 int screenHeight = 800;
-// 2D Array of stickers
-// Cell[][] grid;
+// Array of grids for each Rada Convocation
 HashMap<String, Grid> schemas = new HashMap<String, Grid>();
+// Current grid
 String currentSchemaName = "default";
 Grid currentSchema;
-// Number of columns and rows in the grid
-int cols = 45;
-int rows = 22;
 // colors
 int bgColor = 160;
 color selectedColor = #ffffff;
@@ -73,7 +72,7 @@ void setup() {
   size(1200, 800, P2D);
 	smooth();
 	// TODO prepare data
-	// loadJson("data/rada.json");
+	loadJson("data/rada.json");
 	// init schemas
 	setSchemas(schema, currentSchemaName); // FIXME controls are broken
 	// init controls

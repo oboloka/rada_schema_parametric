@@ -1,13 +1,15 @@
 {
+	"default": [],
 	"rada1": [
 		{
 			"amount": 239,
 			"name": "За суверенную, советскую Украину",
+			"nameTrans": "Za suverennuju, sovetskuju Ukrainu",
 			"color": "#bf4147"
 		},
 		{
 			"amount": 125,
-			"name": "Народная Рада",
+			"name": "Narodnaja Rada",
 			"color": "#f05c85"
 		},
 		{

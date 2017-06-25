@@ -123,6 +123,5 @@ void guiStickerType(int n) {
 void guiConvocationList(int n) {
 	String type = (String) gui.get(ScrollableList.class, "guiConvocationList").getItem(n).get("text");
 	currentSchemaName = type;
-	displaySchema();
-	// TODO grid update
+	setSchemas(schema, type); // FIXME
 }
