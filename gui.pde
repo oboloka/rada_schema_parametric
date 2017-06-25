@@ -8,12 +8,16 @@ ControlP5 initGui() {
 	gui = new ControlP5(this);
 	guiGroup = gui.addGroup("Controls");
 
+	int defBgColor = currentSchema.bgColor;
+	float defMarginVert = currentSchema.marginVert;
+	float defMarginHoriz = currentSchema.marginHoriz;
+
 	gui.addSlider("guiBgSlider")
 		.setCaptionLabel("background")
 		.setPosition(10,10)
 		.setSize(250,20)
 		.setRange(0,255)
-		.setValue(160)
+		.setValue(defBgColor)
 		.setGroup(guiGroup);
 
 	gui.addTextfield("guiInputFilename")
@@ -40,7 +44,7 @@ ControlP5 initGui() {
 		.setOpen(false)
 		.setValue(0);
 
-	gui.addTextfield("guiStickerHeight")
+/*	gui.addTextfield("guiStickerHeight")
 		.setCaptionLabel("Height")
 		.setPosition(180, 80)
 		.setSize(30, 20)
@@ -50,11 +54,11 @@ ControlP5 initGui() {
 		.setCaptionLabel("Width")
 		.setPosition(230, 80)
 		.setSize(30, 20)
-		.setGroup(guiGroup);
+		.setGroup(guiGroup);*/
 
 	gui.addTextfield("guiMarginHoriz")
 		.setCaptionLabel("Margin Horizont")
-		.setStringValue("3")
+		.setDefaultValue(defMarginHoriz)
 		.setPosition(10, 120)
 		.setSize(30, 20)
 		.setAutoClear(false)
@@ -62,22 +66,21 @@ ControlP5 initGui() {
 
 	gui.addTextfield("guiMarginVert")
 		.setCaptionLabel("Margin Vertical")
-		.setDefaultValue(marginVert)
+		.setDefaultValue(defMarginVert)
 		.setPosition(80, 120)
 		.setSize(30, 20)
 		.setAutoClear(false)
 		.setGroup(guiGroup);
 
-	gui.addScrollableList("guiConvocationNum")
-		.setCaptionLabel("Convocation Number")
+	gui.addScrollableList("guiConvocationList")
+		.setCaptionLabel("Rada Convocation Number")
 		.setPosition(10, 160)
 		.setSize(150, 100)
 		.setBarHeight(20)
 		.setItemHeight(20)
-		.addItems(stickerTypes)
+		.addItems(schemaList)
 		.setType(ScrollableList.DROPDOWN)
-		.setOpen(false)
-		.setValue(0);
+		.setOpen(false);
 
 	// TODO colors select
 
@@ -89,6 +92,8 @@ ControlP5 initGui() {
  */
 void guiBgSlider(int colorValue) {
   bgColor = color(colorValue);
+	// TODO grid update
+	currentSchema.setBackground(bgColor);
 }
 
 void guiButtonSave(int theValue) {
@@ -97,17 +102,27 @@ void guiButtonSave(int theValue) {
 }
 
 public void guiMarginHoriz(String val) {
-  marginHoriz = Float.valueOf(val);
+  float marginHoriz = Float.valueOf(val);
 	println("set marginHoriz:"+marginHoriz);
+	currentSchema.setMarginHoriz(marginHoriz);
 }
 public void guiMarginVert(String val) {
-  marginVert = Float.valueOf(val);
+  float marginVert = Float.valueOf(val);
 	println("set marginVert:"+marginVert);
+	currentSchema.setMarginVert(marginVert);
 }
 
 void guiStickerType(int n) {
   String size = (String) gui.get(ScrollableList.class, "guiStickerType").getItem(n).get("text");
 	String[] sizeArray = size.split(Pattern.quote("x"));
-	stickerWidth = Float.valueOf(sizeArray[1]);
-	stickerHeight = Float.valueOf(sizeArray[0]);
+	float stickerWidth = Float.valueOf(sizeArray[1]);
+	float stickerHeight = Float.valueOf(sizeArray[0]);
+	currentSchema.setSticker(stickerWidth, stickerHeight);
+}
+
+void guiConvocationList(int n) {
+	String type = (String) gui.get(ScrollableList.class, "guiConvocationList").getItem(n).get("text");
+	currentSchemaName = type;
+	displaySchema();
+	// TODO grid update
 }

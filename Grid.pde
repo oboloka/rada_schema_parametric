@@ -1,8 +1,15 @@
 // A Grid object
 class Grid {
-  // A grid object knows about its cells
   String name;
+  // A grid object knows about its cells
 	Cell[][] grid;
+	// screen size
+	int screenWidth;
+	int screenHeight;
+	// screenMargin
+	float marginScreenX;
+	float marginScreenY;
+	// colors
 	int bgColor = 160;
 	color selectedColor = #ffffff;
 	// price sticker parameters
@@ -13,22 +20,31 @@ class Grid {
 	float marginVert = 3;
 
   // Grid Constructor
-  Grid(String gridName) {
+  Grid(String gridName, int scrW, int scrH) {
     name = gridName;
+		screenWidth = scrW;
+		screenHeight = scrH;
+		setGrid(schema, currentSchemaName);
   }
 
-	// Display grid
+	// Display schema
 	public void display() {
-	  for (int i = 0; i < cols; i++) {
+		displayGrid();
+		displayLegend();
+	}
+
+	void displayGrid() {
+		// loop by cells of grid
+		for (int i = 0; i < cols; i++) {
 	    for (int j = 0; j < rows; j++) {
 	      grid[i][j].display();
 	    }
 	  }
-		displayLegend();
 	}
 
 	// Fill Grid Cells with values
-	void set(String[] schema, String[] colorSchema) {
+	void setGrid(String[] schema, String colorSchema) {
+		setScreenMargin();
 		grid = new Cell[cols][rows];
 		for (int i = 0; i < cols; i++) {
 			for (int j = 0; j < rows; j++) {
@@ -45,15 +61,14 @@ class Grid {
 	}
 
 	void displayLegend() {
-		int numColors = stickerColors.length;
 		int size = 20;
+		int numColors = stickerColors.length;
 	  for(int i=0; i<numColors; i++) {
 			int xPos = width - 20 - (i)*20;
 			int yPos = 0;
 			if (stickerColors[i] == selectedColor) {
 				stroke(255);
 				strokeWeight(3);
-				// println(xPos, yPos, xPos+size, yPos+size);
 			}
 	    fill(stickerColors[i]);
 			if((mouseX >= xPos && mouseX <= xPos+size) && //check horizontal bounds(left/right)
@@ -67,15 +82,42 @@ class Grid {
 	  }
 	}
 
+	// Set magrin for render screen based on grid size
+	void setScreenMargin(){
+		float gridSizeX = cols * (stickerWidth + marginHoriz*2);
+		float gridSizeY = rows * (stickerHeight + marginVert*2);
+		marginScreenX = (screenWidth - gridSizeX)/2;
+		marginScreenY = (screenHeight - gridSizeY)/2;
+	}
+
 	void setBackground(int bg) {
 		bgColor = bg;
 		for (int i = 0; i < cols; i++) {
 	    for (int j = 0; j < rows; j++) {
-	      grid[i][j].setColor(bgColor);
-				grid[i][j].display();
+				if(!grid[i][j].active) {
+		      grid[i][j].setColor(bgColor);
+					grid[i][j].display();
+				}
 	    }
 	  }
 	};
+
+	void setMarginHoriz(float val) {
+		marginHoriz = val;
+		setGrid(schema, currentSchemaName);
+		display();
+	}
+	void setMarginVert(float val) {
+		marginVert = val;
+		setGrid(schema, currentSchemaName);
+		display();
+	}
+	void setSticker(float stWidth, float stHeight) {
+		stickerWidth = stWidth;
+		stickerHeight = stHeight;
+		setGrid(schema, currentSchemaName);
+		display();
+	}
 /*
   void display() {
 
