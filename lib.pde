@@ -15,10 +15,10 @@ boolean charToBool(char c) {
   }
 }
 
-int getColor(boolean hasCell, int defColor) {
+int getColor(boolean hasCell, int defColor, int emptyColor) {
 	int cellColor;
 	if (hasCell){
-		cellColor = 255;
+		cellColor = emptyColor;
 	} else {
 		cellColor = defColor;
 	}

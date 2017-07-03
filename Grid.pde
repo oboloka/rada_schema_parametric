@@ -46,10 +46,9 @@ class Grid {
 				float x = i*stickerWidth + i*marginHoriz*2 + marginScreenY;
 				float y = j*stickerHeight + j*marginVert*2 + marginScreenY;
 				boolean hasCell = charToBool(schema[j].charAt(i));
-				// TODO colorSchema
-				int cellColor = getColor(hasCell, bgColor);
+				int cellColor = getColor(hasCell, bgColor, emptyColor);
 				// Initialize each object
-				grid[i][j] = new Cell(x, y, stickerWidth, stickerHeight, cellColor, hasCell);
+				grid[i][j] = new Cell(i, j, x, y, stickerWidth, stickerHeight, cellColor, hasCell);
 			}
 		}
 	}
@@ -92,11 +91,11 @@ class Grid {
 	  for(int i=0; i<numColors; i++) {
 			int xPos = width - 20 - (i)*20;
 			int yPos = 0;
+	    fill(stickerColors[i]);
 			if (stickerColors[i] == selectedColor) {
-				stroke(255);
+				stroke(emptyColor);
 				strokeWeight(3);
 			}
-	    fill(stickerColors[i]);
 			if((mouseX >= xPos && mouseX <= xPos+size) && //check horizontal bounds(left/right)
 	       (mouseY >= yPos && mouseY <= yPos+size) //check vertical bounds(top/bottom)
 			){
@@ -121,7 +120,7 @@ class Grid {
 				// draw original data
 				int xPos = width - size;
 				int yPos = 200 + (i)*size;
-				stroke(255);
+				stroke(emptyColor);
 				strokeWeight(3);
 				fill(fcolor);
 				rect(xPos, yPos, size, size);
@@ -164,7 +163,7 @@ class Grid {
 			noStroke();
 			rect(x, yPos+size, size, size);
 			fill(0);
-			text(unused+"?", x+3, yPos+size+11);
+			text(unused+"?", x-5, yPos+size+11);
 		}
 	}
 
@@ -191,12 +190,49 @@ class Grid {
 		}
 	}
 
-	void subtrReducedColor(color c){
+	boolean subtrReducedColor(color c){
 		String colorKey = hex(c);
 		if (colors.containsKey(colorKey)) {
 			int curAmount = colors.get(colorKey);
-			colors.put(colorKey, curAmount - 1);
+			if (curAmount > 0) {
+				colors.put(colorKey, curAmount - 1);
+				return true;
+			}
 		}
+		return false;
+	}
+
+/*
+Flood fill, also called seed fill, is an algorithm that determines the area connected to
+a given node in a multi-dimensional array. It is used in the "bucket" fill tool of paint
+programs to fill connected, similarly-colored areas with a different color. When applied on
+an image to fill a particular bounded area with color, it is also known as boundary fill.
+https://en.wikipedia.org/wiki/Flood_fill
+
+Flood-fill (node, target-color, replacement-color):
+ 1. If target-color is equal to replacement-color, return.
+ 2. If the color of node is not equal to target-color, return.
+ 3. Set the color of node to replacement-color.
+ 4. Perform Flood-fill (one step to the south of node, target-color, replacement-color).
+    Perform Flood-fill (one step to the north of node, target-color, replacement-color).
+    Perform Flood-fill (one step to the west of node, target-color, replacement-color).
+    Perform Flood-fill (one step to the east of node, target-color, replacement-color).
+ 5. Return.
+ */
+	void floodFill(int x, int y, color targetColor, color replacementColor) {
+		Cell stCell = grid[x][y];
+		if(targetColor == replacementColor) return;
+		if(color(stCell.cellColor) != targetColor) return;
+		// println("floodFill", x, y, targetColor, replacementColor);
+		if(color(stCell.cellColor) != color(bgColor)) {
+			if(!stCell.setColor(replacementColor)) return;
+		}
+		// println(x, y, cols, rows, hex(stCell.cellColor, 6));
+		if (y+1 < rows-1) this.floodFill(x, y+1, targetColor, replacementColor);
+		if (y-1 >= 0) this.floodFill(x, y-1, targetColor, replacementColor);
+		if (x-1 >= 0) this.floodFill(x-1, y, targetColor, replacementColor);
+		if (x+1 < cols-1) this.floodFill(x+1, y, targetColor, replacementColor);
+		return;
 	}
 
 	// Set magrin for render screen based on grid size
@@ -206,7 +242,6 @@ class Grid {
 		marginScreenX = (screenWidth - gridSizeX)/2;
 		marginScreenY = (screenHeight - gridSizeY)/2;
 	}
-
 	void setBackground(int bg) {
 		bgColor = bg;
 		for (int i = 0; i < cols; i++) {
@@ -218,7 +253,6 @@ class Grid {
 	    }
 	  }
 	};
-
 	void setMarginHoriz(float val) {
 		marginHoriz = val;
 		// FIXME don't clear all settings

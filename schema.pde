@@ -26,7 +26,10 @@ String currentSchemaName = "default";
 Grid currentSchema;
 // colors
 int bgColor = 160;
+int emptyColor = 230;
 color selectedColor = #ffffff;
+// allpy flood fill algorithm
+boolean isFloodFill = false;
 // Available colors
 color[] stickerColors = { #e2fe85, #9cffa5, #fe9470, #fab655, #fc53c4, #ffffff };
 // Price sticker's size types:

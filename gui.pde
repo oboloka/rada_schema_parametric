@@ -17,6 +17,7 @@ ControlP5 initGui() {
 		.setPosition(10,10)
 		.setSize(250,20)
 		.setRange(0,255)
+		.setDefaultValue(defBgColor)
 		.setValue(defBgColor)
 		.setGroup(guiGroup);
 
@@ -82,7 +83,9 @@ ControlP5 initGui() {
 		.setType(ScrollableList.DROPDOWN)
 		.setOpen(false);
 
-	// TODO colors select
+	gui.addCheckBox("guiFloodFill")
+    .setPosition(width - 120, 30)
+    .addItem("Flood Fill algorithm", 0);
 
 	return gui;
 }
@@ -91,9 +94,14 @@ ControlP5 initGui() {
  * GIU event handlers
  */
 void guiBgSlider(int colorValue) {
-  bgColor = color(colorValue);
-	// TODO grid update
-	currentSchema.setBackground(bgColor);
+	if(colorValue != bgColor) {
+		bgColor = color(colorValue);
+		currentSchema.setBackground(bgColor);
+	}
+}
+
+void guiFloodFill(float[] theValue) {
+  isFloodFill = theValue[0] > 0;
 }
 
 void guiButtonSave(int theValue) {
